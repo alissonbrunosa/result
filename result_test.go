@@ -24,6 +24,82 @@ func TestVerification(t *testing.T) {
 	}
 }
 
+func TestAnd(t *testing.T) {
+	var v interface{}
+	var expected string
+
+	var x Result = Ok(2)
+	var y Result = Err("Error")
+
+	expected = "Error"
+	v = x.And(y).Value()
+	if v != expected {
+		t.Errorf("Expected %v, got %v\n", expected, v)
+	}
+
+	x = Err("Error")
+	y = Ok("Okay")
+	expected = "Error"
+	v = x.And(y).Value()
+	if v != expected {
+		t.Errorf("Expected %v, got %v\n", expected, v)
+	}
+
+	x = Err("Error 1")
+	y = Err("Error 2")
+	expected = "Error 1"
+	v = x.And(y).Value()
+	if v != expected {
+		t.Errorf("Expected %v, got %v\n", expected, v)
+	}
+
+	x = Ok("Ok 1")
+	y = Ok("Ok 2")
+	expected = "Ok 2"
+	v = x.And(y).Value()
+	if v != expected {
+		t.Errorf("Expected %v, got %v\n", expected, v)
+	}
+}
+
+func TestOr(t *testing.T) {
+	var v interface{}
+	var expected interface{}
+
+	var x Result = Ok(20)
+	var y Result = Err("Error")
+
+	v = x.Or(y).Value()
+	expected = 20
+	if v != expected {
+		t.Errorf("Expected %v, got %v\n", expected, v)
+	}
+
+	x = Err("Error")
+	y = Ok(20)
+	expected = 20
+	v = x.Or(y).Value()
+	if v != expected {
+		t.Errorf("Expected %v, got %v\n", expected, v)
+	}
+
+	x = Err("Error 1")
+	y = Err("Error 2")
+	expected = "Error 2"
+	v = x.Or(y).Value()
+	if v != expected {
+		t.Errorf("Expected %v, got %v\n", expected, v)
+	}
+
+	x = Ok(10)
+	y = Ok(20)
+	expected = 10
+	v = x.Or(y).Value()
+	if v != expected {
+		t.Errorf("Expected %v, got %v\n", expected, v)
+	}
+}
+
 func TestAndThen(t *testing.T) {
 	var v interface{}
 	var expected int
